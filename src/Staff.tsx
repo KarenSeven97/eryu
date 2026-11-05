@@ -10,5 +10,5 @@ export function Staff({notes,flats=false,hidden=false,simultaneous=false}:{notes
  draw('treble',0,hidden?[]:notes.filter(n=>n>=60));draw('bass',110,hidden?[]:notes.filter(n=>n<60));
  const svg=el.querySelector('svg');if(svg){svg.setAttribute('viewBox','0 0 640 230');svg.style.width='100%';svg.style.height='auto';}
  }catch{setError(true);}},[notes,flats,hidden,simultaneous]);
- return <div className="staff-wrap"><div className="staff" ref={ref} role="img" aria-label={hidden?'答案乐谱已隐藏':`五线谱：${notes.map(n=>name(n,flats)).join('、')||'等待演奏'}`}/>{hidden&&<div className="staff-hint">先用耳朵寻找答案<span>答题后，音符将在这里揭晓</span></div>}{error&&<p role="alert">乐谱暂时无法显示，请重新打开页面。</p>}</div>;
+ return <div className="staff-wrap"><div className="staff" ref={ref} role="img" aria-label={hidden?'答案乐谱已隐藏':`五线谱：${notes.map(n=>name(n,flats)).join('、')||'等待演奏'}`}/>{hidden&&<div className="staff-hint">答题后显示乐谱</div>}{error&&<p role="alert">乐谱暂时无法显示，请重新打开页面。</p>}</div>;
 }
