@@ -1,0 +1,6 @@
+import {expect,it} from 'vitest';
+import {appendNote,quantize,timeline,type ScoreEvent} from './composition';
+it('按速度量化长按，边界为1.5和3拍',()=>{expect(quantize(100,60)).toBe('q');expect(quantize(1499,60)).toBe('q');expect(quantize(1500,60)).toBe('h');expect(quantize(2999,60)).toBe('h');expect(quantize(3000,60)).toBe('w');expect(quantize(1500,120)).toBe('w');});
+it('近同时按键合成和弦、去重、保留更长时值，按起音排序',()=>{let e=appendNote([],64,200,60,1000);e=appendNote(e,60,2200,60,1010);e=appendNote(e,60,200,60,1015);expect(e).toHaveLength(1);expect(e[0].notes).toEqual([60,64]);expect(e[0].duration).toBe('h');e=appendNote(e,67,3200,60,1300);expect(e).toHaveLength(2);expect(e[1].duration).toBe('w');});
+it('四分、二分、全音符按速度生成回放时间，删除后无空洞',()=>{const events:ScoreEvent[]=['q','h','w'].map((duration,i)=>({id:String(i),notes:[60+i],duration:duration as ScoreEvent['duration'],started:i*1000}));expect(timeline(events,120).map(e=>[e.time,e.seconds])).toEqual([[0,.5],[.5,1],[1.5,2]]);expect(timeline(events.filter(e=>e.id!=='1'),120).map(e=>e.time)).toEqual([0,.5]);});
+it('最多记录128组，不继续扩张',()=>{const e:ScoreEvent[]=Array.from({length:128},(_,i)=>({id:String(i),notes:[60],duration:'q',started:i*1000}));expect(appendNote(e,64,300,90,999999)).toBe(e);});
